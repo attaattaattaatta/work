@@ -1,0 +1,51 @@
+alias fix7='sed -i "s/^mirrorlist=/#mirrorlist=/g" /etc/yum.repos.d/CentOS-*; sed -i "s|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g" /etc/yum.repos.d/CentOS-*; yum --enablerepo=updates clean metadata > /dev/null 2>&1'; 
+
+alias net1='if command -v netstat &> /dev/null; then netstat -nt | awk "{print \$6}" | sort | uniq -c | sort -n -k 1 -r | head -n -1; else ss -tulpan "! dst 0.0.0.0 and ! dst [::1]" | awk " \$6 ~ /^[0-9]/ {print \$6}" | cut -d: -f1 | sort | uniq -c | sort -n | tail -n 6; ss -nta | awk "{print \$1}" | sort | uniq -c | sort -n -k 1 -r | head -n -1; fi;'; 
+
+alias net2='while true; do lsof -i -n -P | grep -vE "LISTEN|rpcbind|ESTABLISHED|named|chronyd|memcached|ntpd|core|COMMAND"; sleep 1s; done';
+
+alias net3='if command -v netstat &> /dev/null; then netstat -ntu | awk " \$5 ~ /^[0-9]/ {print \$5}" | cut -d: -f1 | sort | uniq -c | sort -n | tail -n 300; else ss -tulpan "! dst 0.0.0.0 and ! dst [::1]" | awk " \$6 ~ /^[0-9]/ {print \$6}" | cut -d: -f1 | sort | uniq -c | sort -n | tail -n 300; fi;'; 
+
+alias net4='watch -n 2 "ss -s && echo &&  cat /proc/net/sockstat && echo && netstat -nt | awk \"{print \$6}\" | sort | uniq -c | sort -n -k 1 -r | head -n -1"'; 
+
+alias tuner='mysql -V; grep -RiE "socket\s+?=" /etc/my*; mysql -e '\'' show variables where Variable_Name in ("innodb_lru_scan_depth", "optimizer_search_depth", "myisam_recover", "myisam_recover", "max_connect_errors", "default_storage_engine", "transaction_isolation", "tx_isolation", "slave_net_timeout", "innodb_use_sys_malloc", "sql_mode", "collation_server", "init_connect", "character_set_server", "query_cache_size", "query_cache_limit", "query_cache_type", "expire_logs_days", "max_binlog_size", "thread_stack", "thread_pool_size", "open_files_limit", "table_cache", "table_definition_cache", "table_open_cache", "key_buffer_size", "sort_buffer_size", "join_buffer_size", "innodb_force_recovery ", "innodb_buffer_pool_size", "innodb_io_capacity_max", "innodb_io_capacity", "innodb_strict_mode", "innodb_max_dirty_pages_pct", "innodb_thread_concurrency", "innodb_print_all_deadlocks", "innodb_buffer_pool_instances", "innodb_log_file_size", "innodb_log_buffer_size", "innodb_file_format", "innodb_flush_log_at_trx_commit", "innodb_flush_method", "innodb_file_per_table", "wait_timeout", "interactive_timeout", "back_log", "threads_connected", "thread_concurrency", "thread_cache_size", "max_connections", "max_heap_table_size", "tmp_table_size", "max_allowed_packet", "symbolic_links", "local_infile", "bind_address", "basedir", "datadir", "tmpdir", "log_warnings", "long_query_time", "slow_query_log", "slow_query_log_file", "log_error", "pid_file", "socket", "binlog_expire_logs_seconds","innodb_page_cleaners")'\''; mysql -e "SELECT @@character_set_database, @@collation_database;"; perl <($wgtvr  "https://raw.github.com/major/MySQLTuner-perl/master/mysqltuner.pl") --buffers --user root --host localhost';
+
+alias nr='nginx -T | grep root';
+
+alias nacc='nginx -T | grep acc';
+
+alias nerr='nginx -T | grep err';
+
+alias nssl='nginx -T | grep ssl_';
+
+alias rsynca='rsync -azx --info=progress2'; 
+
+alias rsynch='rsync -aHzx --info=progress2'; 
+
+alias grepn='grep -RiIn'; 
+
+alias grepl='grep -RiIl' ; 
+
+alias ll='ls -la'; 
+
+alias la='ls -la'; 
+
+alias cl='cat /etc/crontab; for user in $(getent passwd | cut -f1 -d: ); do echo $user && echo && crontab -u $user -l && echo; done; systemctl list-timers ';
+
+alias lat='ls -latrh'; 
+
+alias lah='ls -latrh';  
+
+alias exit1=' kill -9 $$'; 
+
+alias exit2=' history -c; > /root/.bash_history; kill -9 $$'; 
+
+alias tw=' bash <($wgtvr https://bit.ly/3nelivO) tweak';
+
+alias myl='DBSZ="SELECT table_schema AS \`DB Name\`, ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) AS \`DB Size(MB)\` FROM information_schema.tables GROUP BY table_schema ORDER BY \`DB Size(MB)\` ASC;"; if which docker &> /dev/null; then DOCKERDB="docker ps --format {{.Names}}"; for cont in $($DOCKERDB | grep -iE "percona|mysql|mariadb"); do echo; printf "DBs in container ${cont}:\n\n"; \docker exec -it $cont \mysql -e "$DBSZ" 2>/dev/null; done; fi; echo; printf "Native mysql:\n\n"; \mysql -e "$DBSZ" 2>/dev/null'; 
+
+alias myb='BKPMSQLD="/root/support/mysql.backup.$(date "+%d-%b-%Y-%H-%M-%Z")"; \mkdir -p "$BKPMSQLD" &> /dev/null;RNDFILE2="/tmp/mysql.grants.$RANDOM"; if which docker &> /dev/null; then DOCKERDB="docker ps --format {{.Names}}"; for cont in $($DOCKERDB | grep -iE "percona|mysql|mariadb"); do GRNTFILE2="$BKPMSQLD/$cont/.grants"; \mkdir -p "$BKPMSQLD/$cont" &> /dev/null; echo; \docker exec $cont \mysql -e "select concat('\''show create user '\'','\'''\\\'''\'',user,'\''\'\''@\'\'''\'',host,'\''\'\'''\'','\'';'\'') from mysql.user" | sed "1d" > $RNDFILE2; \docker exec $cont \mysql -e "select concat('\''show grants for '\'','\'''\\\'''\'',user,'\''\'\''@\'\'''\'',host,'\''\'\'''\'','\'';'\'') from mysql.user" | sed "1d" >> $RNDFILE2; while read grant; do \docker exec $cont \mysql -B -e "${grant}" 2>/dev/null >> $GRNTFILE2; done < $RNDFILE2; \rm -f $RNDFILE2; echo "FLUSH PRIVILEGES" >> $GRNTFILE2; sed -i '\''s@Grants for@-- Grants for@gi'\'' $GRNTFILE2; sed -i '\''s@CREATE USER for @-- CREATE USER for @gi'\'' $GRNTFILE2; sed -i '\''s@$@;@gi'\'' $GRNTFILE2; echo "Grants for $cont saved to - $GRNTFILE2"; done; fi; echo; GRNTFILE1="$BKPMSQLD/native/.grants"; \mkdir -p "$BKPMSQLD/native" &> /dev/null;RNDFILE1="/tmp/mysql.grants.$RANDOM"; \mysql -e "select concat('\''show create user '\'','\'''\\\'''\'',user,'\''\'\''@\'\'''\'',host,'\''\'\'''\'','\'';'\'') from mysql.user" | sed "1d" > $RNDFILE1; \mysql -e "select concat('\''show grants for '\'','\'''\\\'''\'',user,'\''\'\''@\'\'''\'',host,'\''\'\'''\'','\'';'\'') from mysql.user" | sed "1d" >> $RNDFILE1; while read grant; do \mysql -B -e "${grant}" 2>/dev/null >> $GRNTFILE1; done < $RNDFILE1; \rm -f $RNDFILE1; echo "FLUSH PRIVILEGES" >> $GRNTFILE1; sed -i '\''s@Grants for@-- Grants for@gi'\'' $GRNTFILE1; sed -i '\''s@CREATE USER for @-- CREATE USER for @gi'\'' $GRNTFILE1; sed -i '\''s@$@;@gi'\'' $GRNTFILE1; echo "Grants for MySQL native saved to - $GRNTFILE1"; if which docker &> /dev/null; then DOCKERDB="docker ps --format {{.Names}}"; for cont in $($DOCKERDB | grep -iE "percona|mysql|mariadb"); do \mkdir -p "$BKPMSQLD/$cont" &> /dev/null; echo; echo "Dumping mysql DBs in container $cont to $BKPMSQLD/$cont"; \docker exec $cont \mysql -N -e "show databases" | while read dbname 2>/dev/null; do echo; printf "Processing - $BKPMSQLD/$cont/$dbname.sql\n"; \docker exec $cont \mysqldump --insert-ignore --complete-insert --events --routines --triggers --single-transaction --max_allowed_packet=1G --quick --lock-tables=false "$dbname" > $BKPMSQLD/$cont/$dbname.sql; done; echo; done; echo "Docker MySQL backup done to - $BKPMSQLD"; else echo "docker now found in PATH"; fi; echo; if which mysql &> /dev/null; then echo "Backing up native mysql to $BKPMSQLD/native"; \mkdir -p "$BKPMSQLD/native" &> /dev/null; \mysql -V > "$BKPMSQLD/native/.version" 2>/dev/null; \mysql -N -e "show databases" | while read dbname 2>/dev/null; do echo; printf "Processing - $BKPMSQLD/native/$dbname.sql\n"; \mysqldump --insert-ignore --complete-insert --events --routines --triggers --single-transaction --max_allowed_packet=1G --quick --lock-tables=false "$dbname" -r "$BKPMSQLD/native/$dbname.sql"; done; echo; echo "Native MySQL backup done to - $BKPMSQLD"; else echo "mysql not found in PATH"; fi; echo;'; 
+
+alias myf='BKPMSQLD="/root/support/mysql.backup.$(date "+%d-%b-%Y-%H-%M-%Z")"; \mkdir -p "$BKPMSQLD" &> /dev/null; if which docker &> /dev/null; then DOCKERDB="docker ps --format {{.Names}}"; for cont in $($DOCKERDB | grep -iE "percona|mysql|mariadb"); do \mkdir -p "$BKPMSQLD/$cont" &> /dev/null; echo; echo "Dumping mysql DBs in container $cont to ONE SQL FILE - $BKPMSQLD/$cont/full-backup.sql"; \docker exec $cont \mysqldump --all-databases --insert-ignore --complete-insert --events --routines --triggers --single-transaction --max_allowed_packet=1G --quick --lock-tables=false > $BKPMSQLD/$cont/full-backup.sql; echo; done; echo "Docker MySQL backup done to - $BKPMSQLD"; else echo "docker now found in PATH"; fi; echo; if which mysql &> /dev/null; then echo "Backing up native mysql to ONE SQL FILE $BKPMSQLD/native/full-backup.sql"; \mkdir -p "$BKPMSQLD/native" &> /dev/null; \mysql -V > "$BKPMSQLD/native/.version" 2>/dev/null; \mysqldump --all-databases --insert-ignore --complete-insert --events --routines --triggers --single-transaction --max_allowed_packet=1G --quick --lock-tables=false -r $BKPMSQLD/native/full-backup.sql; echo; echo "Native MySQL backup done to - $BKPMSQLD"; else echo "mysql not found in PATH"; fi; echo;';
+
+alias screen1='screen -s bash -Odm bash; screen -x -X stuff '\'' export HISTCONTROL=ignoreboth;  source <(printf "GET https://gitfront.io/r/attaattaatta/js1KTo9XkuRW/work/raw/aliases.txt HTTP/1.1\\nHost:gitfront.io\\nConnection:Close\\n\\n" | timeout 5 openssl 2>/dev/null s_client -crlf -connect gitfront.io:443 -quiet | sed '\''\'\'''\''1,/\^\s$/d'\''\'\'''\'')\r'\''; screen -Ox'
