@@ -24,7 +24,9 @@ alias rsynch='rsync -aHzx --info=progress2';
 
 alias grepn='grep -RiIn'; 
 
-alias grepl='grep -RiIl' ; 
+alias grepl='grep -RiIl'; 
+
+alias sysfailed='systemctl list-units --failed';
 
 alias ll='ls -la'; 
 
