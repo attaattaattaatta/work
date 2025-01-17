@@ -32,7 +32,7 @@ function ll { ls -la; } ;
 
 function la { ls -la; } ;
 
-function du { du -sch; } ;
+alias du { du -sch; } ;
 
 function cl { cat /etc/crontab; for user in $(getent passwd | cut -f1 -d: ); do echo $user && echo && crontab -u $user -l && echo; done; systemctl list-timers; } ;
 
