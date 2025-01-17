@@ -22,15 +22,15 @@ function rsynca { rsync -azx --info=progress2; } ;
 
 function rsynch { rsync -aHzx --info=progress2; } ;
 
-function grepn { grep -RiIn; } ;
+function grepn { grep -RiIn $1; } ;
 
-function grepl { grep -RiIl; } ;
+function grepl { grep -RiIl $1; } ;
 
 function sysfailed { systemctl list-units --failed; } ;
 
-function ll { ls -la; } ;
+function ll { ls -la $1; } ;
 
-function la { ls -la; } ;
+function la { ls -la $1; } ;
 
 alias du='du -sch' ;
 
