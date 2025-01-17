@@ -18,19 +18,19 @@ function nerr { nginx -T | grep err; } ;
 
 function nssl { nginx -T | grep ssl_; } ;
 
-function rsynca { rsync -azx --info=progress2; } ;
+alias rsynca='rsync -azx --info=progress2' ;
 
-function rsynch { rsync -aHzx --info=progress2; } ;
+alias rsynch='rsync -aHzx --info=progress2' ;
 
-function grepn { grep -RiIn $1; } ;
+alias grepn='grep -RiIn' ;
 
-function grepl { grep -RiIl $1; } ;
+alias grepl='grep -RiIl' ;
 
 function sysfailed { systemctl list-units --failed; } ;
 
-function ll { ls -la $1; } ;
+alias ll='ls -la' ;
 
-function la { ls -la $1; } ;
+alias la='ls -la' ;
 
 alias du='du -sch' ;
 
