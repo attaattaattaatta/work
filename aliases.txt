@@ -38,7 +38,11 @@ function cl { cat /etc/crontab; for user in $(getent passwd | cut -f1 -d: ); do 
 
 function lat { ls -latrh; } ;
 
-function lah { ls -latrh; } ;  
+function lah { ls -latrh; } ;
+
+function sysfail { systemctl list-units --state=failed; } ;
+
+alias journalctl='journalctl -l --no-pager -n 200'; 
 
 function exit1 {  kill -9 $$; } ;
 
