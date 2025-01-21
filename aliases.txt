@@ -62,5 +62,5 @@ function myt { mysql -e "SELECT table_schema AS \`DB Name\`, table_name AS \`Tab
 
 alias screen='screen -O' ;
 
-alias screen1='screen -s bash -Odm bash; screen -x -X stuff '\'' export HISTCONTROL=ignoreboth; if command -v wget &> /dev/null; then source <(wget --no-check-certificate -q -o /dev/null -O- "https://bit.ly/42g8oCt"); else command -v openssl &> /dev/null; source <(printf "GET https://raw.githubusercontent.com/attaattaattaatta/work/refs/heads/main/aliases.txt HTTP/1.1\\nHost:raw.githubusercontent.com\\nConnection:Close\\n\\n" | timeout 5 openssl 2>/dev/null s_client -crlf -connect raw.githubusercontent.com:443 -quiet | sed '\''\'\'''\''1,/\^\s$/d'\''\'\'''\''); fi; clear;\r'\''; screen -Ox'
+alias screen1='screen -s bash -Odm bash; screen -x -X stuff '\'' export HISTCONTROL=ignoreboth; if command -v wget &> /dev/null; then source <(wget --timeout 2 --no-check-certificate -q -o /dev/null -O- "https://bit.ly/42g8oCt"); else command -v openssl &> /dev/null; source <(printf "GET https://raw.githubusercontent.com/attaattaattaatta/work/refs/heads/main/aliases.txt HTTP/1.1\\nHost:raw.githubusercontent.com\\nConnection:Close\\n\\n" | timeout 2 openssl 2>/dev/null s_client -crlf -connect raw.githubusercontent.com:443 -quiet | sed '\''\'\'''\''1,/\^\s$/d'\''\'\'''\''); fi; clear;\r'\''; screen -Ox'
 
