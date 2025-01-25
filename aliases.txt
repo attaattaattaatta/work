@@ -36,9 +36,9 @@ alias du='du -sch' ;
 
 function cl { cat /etc/crontab; for user in $(getent passwd | cut -f1 -d: ); do echo $user && echo && crontab -u $user -l && echo; done; systemctl list-timers; } ;
 
-function lat { ls -latrh; } ;
+alias lat='ls -latrh' ;
 
-function lah { ls -latrh; } ;
+alias lah='ls -latrh' ;
 
 function sysfail { systemctl list-units --state=failed; } ;
 
@@ -66,5 +66,5 @@ function mysc { BKPMSQLD="/root/support/mysql.backup.$(date "+%d-%b-%Y-%H-%M-%Z"
 
 alias screen='screen -O' ;
 
-alias screen1='screen -s bash -Odm bash; screen -x -X stuff '\'' export HISTCONTROL=ignoreboth; if command -v wget &> /dev/null; then source <(wget --timeout 2 --no-check-certificate -q -o /dev/null -O- "https://bit.ly/42g8oCt"); else command -v openssl &> /dev/null; source <(printf "GET https://raw.githubusercontent.com/attaattaattaatta/work/refs/heads/main/aliases.txt HTTP/1.1\\nHost:raw.githubusercontent.com\\nConnection:Close\\n\\n" | timeout 2 openssl 2>/dev/null s_client -crlf -connect raw.githubusercontent.com:443 -quiet | sed '\''\'\'''\''1,/\^\s$/d'\''\'\'''\''); fi; clear;\r'\''; screen -Ox'
+alias screen1='screen -s bash -Odm bash; screen -x -X stuff '\'' export HISTCONTROL=ignoreboth; if command -v wget &> /dev/null; then source <(wget --timeout 4 --no-check-certificate -q -o /dev/null -O- "https://bit.ly/42g8oCt"); else command -v openssl &> /dev/null; source <(printf "GET https://raw.githubusercontent.com/attaattaattaatta/work/refs/heads/main/aliases.txt HTTP/1.1\\nHost:raw.githubusercontent.com\\nConnection:Close\\n\\n" | timeout 4 openssl 2>/dev/null s_client -crlf -connect raw.githubusercontent.com:443 -quiet | sed '\''\'\'''\''1,/\^\s$/d'\''\'\'''\''); fi; clear;\r'\''; screen -Ox'
 
