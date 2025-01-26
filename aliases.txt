@@ -66,5 +66,5 @@ function mysc { BKPMSQLD="/root/support/mysql.backup.$(date "+%d-%b-%Y-%H-%M-%Z"
 
 alias screen='screen -O' ;
 
-alias screen1='screen -s bash -Odm bash; screen -x -X stuff '\'' export HISTCONTROL=ignoreboth; if command -v wget &> /dev/null; then source <(wget --timeout 4 --no-check-certificate -q -o /dev/null -O- "https://bit.ly/42g8oCt"); else command -v openssl &> /dev/null; source <(printf "GET https://raw.githubusercontent.com/attaattaattaatta/work/refs/heads/main/aliases.txt HTTP/1.1\\nHost:raw.githubusercontent.com\\nConnection:Close\\n\\n" | timeout 4 openssl 2>/dev/null s_client -crlf -connect raw.githubusercontent.com:443 -quiet | sed '\''\'\'''\''1,/\^\s$/d'\''\'\'''\''); fi; clear;\r'\''; screen -Ox'
+alias screen1='screen -s bash -Odm bash; screen -x -X stuff '\'' export HISTCONTROL=ignoreboth; if command -v wget &> /dev/null; then source <(wget --timeout 4 --no-check-certificate -q -o /dev/null -O- "https://bit.ly/42g8oCt"); else source <(printf "GET https://raw.githubusercontent.com/attaattaattaatta/work/refs/heads/main/aliases.txt HTTP/1.1\\nHost:raw.githubusercontent.com\\nConnection:Close\\n\\n" | timeout 4 openssl 2>/dev/null s_client -crlf -connect raw.githubusercontent.com:443 -quiet | sed '\''\'\'''\''1,/\^\s$/d'\''\'\'''\''); fi; clear;\r'\''; screen -Ox'
 
