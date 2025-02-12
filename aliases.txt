@@ -10,7 +10,7 @@ NCV="\033[0m" ;
 
 alias ispmgrctl="$MGR_CTL" ; 
 
-function fix7 { sed -i "s/^mirrorlist=/#mirrorlist=/g" /etc/yum.repos.d/CentOS-*; sed -i "s|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g" /etc/yum.repos.d/CentOS-*; yum --enablerepo=updates clean metadata > /dev/null 2>&1; } ;
+function fix7 { sed -i "s/^mirrorlist=/#mirrorlist=/g" /etc/yum.repos.d/CentOS-*; sed -i "s|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g" /etc/yum.repos.d/CentOS-*; yum --enablerepo=updates clean metadata > /dev/null 2>&1; \rm -f /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/epel.repo > /dev/null 2>&1; } ;
 
 function net1 { if command -v netstat &> /dev/null; then netstat -nt | awk "{print \$6}" | sort | uniq -c | sort -n -k 1 -r | head -n -1; else ss -tulpan "! dst 0.0.0.0 and ! dst [::1]" | awk " \$6 ~ /^[0-9]/ {print \$6}" | cut -d: -f1 | sort | uniq -c | sort -n | tail -n 6; ss -nta | awk "{print \$1}" | sort | uniq -c | sort -n -k 1 -r | head -n -1; fi; } ;
 
