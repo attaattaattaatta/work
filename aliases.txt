@@ -22,19 +22,19 @@ function net4 { watch -n 2 "ss -s && echo &&  cat /proc/net/sockstat && echo && 
 
 function tuner { mysql -V; grep -RiE "socket\s+?=" /etc/my*; mysql -e ' show variables where Variable_Name in ("innodb_lru_scan_depth", "optimizer_search_depth", "myisam_recover", "myisam_recover", "max_connect_errors", "default_storage_engine", "transaction_isolation", "tx_isolation", "slave_net_timeout", "innodb_use_sys_malloc", "sql_mode", "collation_server", "init_connect", "character_set_server", "query_cache_size", "query_cache_limit", "query_cache_type", "expire_logs_days", "max_binlog_size", "thread_stack", "thread_pool_size", "open_files_limit", "table_cache", "table_definition_cache", "table_open_cache", "key_buffer_size", "sort_buffer_size", "join_buffer_size", "innodb_force_recovery ", "innodb_buffer_pool_size", "innodb_io_capacity_max", "innodb_io_capacity", "innodb_strict_mode", "innodb_max_dirty_pages_pct", "innodb_thread_concurrency", "innodb_print_all_deadlocks", "innodb_buffer_pool_instances", "innodb_log_file_size", "innodb_log_buffer_size", "innodb_file_format", "innodb_flush_log_at_trx_commit", "innodb_flush_method", "innodb_file_per_table", "wait_timeout", "interactive_timeout", "back_log", "threads_connected", "thread_concurrency", "thread_cache_size", "max_connections", "max_heap_table_size", "tmp_table_size", "max_allowed_packet", "symbolic_links", "local_infile", "bind_address", "basedir", "datadir", "tmpdir", "log_warnings", "long_query_time", "slow_query_log", "slow_query_log_file", "log_error", "pid_file", "socket", "binlog_expire_logs_seconds","innodb_page_cleaners")'; mysql -e "SELECT @@character_set_database, @@collation_database;"; perl <($wgtvr  "https://raw.github.com/major/MySQLTuner-perl/master/mysqltuner.pl") --buffers --skippassword --user root --host localhost; } ;
 
-alias nr="nginx -T | grep root || grep -RiIn root /etc/nginx/*";
+function nr { nginx -T | grep root $1 || grep -RiIn root /etc/nginx/* $1 ; } ;
 
-alias nacc="nginx -T | grep acc || grep -RiIn acc /etc/nginx/*";
+function nacc { nginx -T | grep acc $1 || grep -RiIn acc /etc/nginx/* $1 ; } ;
 
-alias nerr="nginx -T | grep err || grep -RiIn err /etc/nginx/*";
+function nerr { nginx -T | grep err $1 || grep -RiIn err /etc/nginx/* $1 ; } ;
 
-alias nssl="nginx -T | grep ssl_ || grep -RiIn ssl_ /etc/nginx/*";
+function nssl { nginx -T | grep ssl_ $1 || grep -RiIn ssl_ /etc/nginx/* $1 ; } ;
 
-alias nconf="nginx -T | grep conf || grep -RiIn conf /etc/nginx/*";
+function nconf { nginx -T | grep conf $1 || grep -RiIn conf /etc/nginx/* $1 ; } ;
 
-alias nserv="nginx -T | grep server_name || grep -RiIn server_name /etc/nginx/*";
+function nserv { nginx -T | grep server_name $1 || grep -RiIn server_name /etc/nginx/* $1 ; } ;
 
-alias ninc="nginx -T | grep include || grep -RiIn include /etc/nginx/*";
+function ninc { nginx -T | grep include $1 || grep -RiIn include /etc/nginx/* $1 ; } ;
 
 alias rsynca='rsync -azx --info=progress2' ;
 
