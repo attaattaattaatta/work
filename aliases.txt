@@ -22,13 +22,19 @@ function net4 { watch -n 2 "ss -s && echo &&  cat /proc/net/sockstat && echo && 
 
 function tuner { mysql -V; grep -RiE "socket\s+?=" /etc/my*; mysql -e ' show variables where Variable_Name in ("innodb_lru_scan_depth", "optimizer_search_depth", "myisam_recover", "myisam_recover", "max_connect_errors", "default_storage_engine", "transaction_isolation", "tx_isolation", "slave_net_timeout", "innodb_use_sys_malloc", "sql_mode", "collation_server", "init_connect", "character_set_server", "query_cache_size", "query_cache_limit", "query_cache_type", "expire_logs_days", "max_binlog_size", "thread_stack", "thread_pool_size", "open_files_limit", "table_cache", "table_definition_cache", "table_open_cache", "key_buffer_size", "sort_buffer_size", "join_buffer_size", "innodb_force_recovery ", "innodb_buffer_pool_size", "innodb_io_capacity_max", "innodb_io_capacity", "innodb_strict_mode", "innodb_max_dirty_pages_pct", "innodb_thread_concurrency", "innodb_print_all_deadlocks", "innodb_buffer_pool_instances", "innodb_log_file_size", "innodb_log_buffer_size", "innodb_file_format", "innodb_flush_log_at_trx_commit", "innodb_flush_method", "innodb_file_per_table", "wait_timeout", "interactive_timeout", "back_log", "threads_connected", "thread_concurrency", "thread_cache_size", "max_connections", "max_heap_table_size", "tmp_table_size", "max_allowed_packet", "symbolic_links", "local_infile", "bind_address", "basedir", "datadir", "tmpdir", "log_warnings", "long_query_time", "slow_query_log", "slow_query_log_file", "log_error", "pid_file", "socket", "binlog_expire_logs_seconds","innodb_page_cleaners")'; mysql -e "SELECT @@character_set_database, @@collation_database;"; perl <($wgtvr  "https://raw.github.com/major/MySQLTuner-perl/master/mysqltuner.pl") --buffers --skippassword --user root --host localhost; } ;
 
-function nr { nginx -T | grep root; } ;
+alias nr="nginx -T | grep root || grep -RiIn root /etc/nginx/*";
 
-function nacc { nginx -T | grep acc; } ;
+alias nacc="nginx -T | grep acc || grep -RiIn acc /etc/nginx/*";
 
-function nerr { nginx -T | grep err; } ;
+alias nerr="nginx -T | grep err || grep -RiIn err /etc/nginx/*";
 
-function nssl { nginx -T | grep ssl_; } ;
+alias nssl="nginx -T | grep ssl_ || grep -RiIn ssl_ /etc/nginx/*";
+
+alias nconf="nginx -T | grep conf || grep -RiIn conf /etc/nginx/*";
+
+alias nserv="nginx -T | grep server_name || grep -RiIn server_name /etc/nginx/*";
+
+alias ninc="nginx -T | grep include || grep -RiIn include /etc/nginx/*";
 
 alias rsynca='rsync -azx --info=progress2' ;
 
@@ -88,4 +94,4 @@ function autocfg2 { s3cmd --access_key=auto_$1 --secret_key=$2 --region=RegionOn
 
 function speed { SPEEDTEST_URL="https://packagecloud.io/install/repositories/ookla/speedtest-cli"; curl -s ${SPEEDTEST_URL}/script.deb.sh | bash || curl -s ${SPEEDTEST_URL}/script.rpm.sh | bash;  yum install -y speedtest || apt install -y speedtest || apt-get install -y curl speedtest-cli || yum install -y curl speedtest-cli; speedtest-cli --secure --list | grep -i Russia; for i in $(speedtest --accept-license --servers | awk '{print $1}' | grep -Eo [[:digit:]]+); do speedtest --accept-license --server-id=$i | tail -n +3; done || for i in $(speedtest-cli --secure --list | grep -i Russia | grep -o '^[0-9]*'); do speedtest-cli --secure --server $i | grep -viE "(testing|retrieving)" ; done ; } ;
 
-function backup { if ! [[ ${HOSTNAME#*.} =~ "hoztnode.net" || ${HOSTNAME#*.} =~ "ispserver.com" || ${HOSTNAME} == "backup.fvds.ru" || ${HOSTNAME} == "backup.ispsystem.net" ]]; then BKPRDP="/root/support"; printf "$BKPRDP current size - $(du -sm "$BKPRDP" | awk "{print \$1}" | head -n 1)MB\n" 2> /dev/null; if \mkdir -p "$BKPRDP"; then RUP=$(df "$BKPRDP" | sed 1d | awk "{print \$5}" | sed 's@%@@gi'); if [[ "$RUP" -le 95 ]]; then BACKUP_PATH_LIST=("/etc" "/usr/local/mgr5/etc" "/var/spool/cron" "/var/named/domains"); BDDP="${BKPRDP}/$(date '+%d-%b-%Y-%H-%M-%Z')"; \mkdir -p "$BDDP" &> /dev/null; printf "Creating config backup - ${BDDP}\n"; for backup_item in "${BACKUP_PATH_LIST[@]}"; do backup_item_size=$(\du -sm --exclude=/etc/ispmysql "${backup_item}" | awk "{print \$1}"); if [[ "${backup_item_size}" -lt 2000 ]]; then \cp -Rfp --parents --reflink=auto "${backup_item}" "${BDDP}" &> /dev/null; else printf "No backup of ${backup_item} - ${backup_item_size}\n"; fi; done; \cp -Rfp --parents --reflink=auto "/opt/php"*"/etc/" "$BDDP" &> /dev/null; fi; fi; else EXCLUDED=YES; printf "excluded hostname, no backup done\n"; fi; } ;
+function backup { if ! [[ ${HOSTNAME#*.} =~ "hoztnode.net" || ${HOSTNAME#*.} =~ "ispserver.com" || ${HOSTNAME} == "backup.fvds.ru" || ${HOSTNAME} == "backup.ispsystem.net" ]]; then BKPRDP="/root/support"; printf "$BKPRDP current size - $(du -sm "$BKPRDP" | awk "{print \$1}" | head -n 1)MB\n" 2> /dev/null; if \mkdir -p "$BKPRDP"; then RUP=$(df "$BKPRDP" | sed 1d | awk "{print \$5}" | sed 's@%@@gi'); if [[ "$RUP" -le 95 ]]; then BACKUP_PATH_LIST=("/etc" "/usr/local/mgr5/etc" "/var/spool/cron" "/var/named/domains"); BDDP="${BKPRDP}/$(date '+%d-%b-%Y-%H-%M-%Z')"; \mkdir -p "$BDDP" &> /dev/null; printf "Creating config backup - ${BDDP}\n"; for backup_item in "${BACKUP_PATH_LIST[@]}"; do backup_item_size=$(\du -sm --exclude=/etc/ispmysql "${backup_item}" | awk "{print \$1}" 2>/dev/null); if [[ "${backup_item_size}" -lt 2000 ]]; then \cp -Rfp --parents --reflink=auto "${backup_item}" "${BDDP}" &> /dev/null; else printf "No backup of ${backup_item} - ${backup_item_size}\n"; fi; done; \cp -Rfp --parents --reflink=auto "/opt/php"*"/etc/" "$BDDP" &> /dev/null; fi; fi; else EXCLUDED=YES; printf "excluded hostname, no backup done\n"; fi; } ;
