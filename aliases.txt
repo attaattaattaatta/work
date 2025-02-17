@@ -106,4 +106,4 @@ function mkhosts { func_v="v1.0.2"; printf "\n${FUNCNAME[0]} - ${func_v}\n"; mkh
 
 
 
-
+function aliases { func_and_aliases_after=$(alias | awk -F= '{print $1}' | awk '{print $2}' && declare -F | awk '{print $3}'); comm -13 <(echo "$func_and_aliases_before" | sort) <(echo "$func_and_aliases_after" | sort); } ;
