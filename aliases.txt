@@ -106,8 +106,7 @@ function mkhosts { func_v="v1.0.2"; printf "\n%s - %s\n" "${FUNCNAME[0]}" "$func
 
 function findreplace { echo -e "findreplace - v1.0.9\n"; [[ -z "$1" || -z "$2" ]] && { echo "findreplace <search> <replace> [file|dir]"; return 1; }; [[ -n "$3" && ! -e "$3" ]] && { echo "Error: '$3' does not exist"; return 1; }; target="${3:-$(pwd)}"; type=$( [[ -f "$3" ]] && echo "file" || echo "dir" ); read -p "Replace '$1' with '$2' in $type '$target'? [Y/n] " -n 1 -r; echo; [[ ! $REPLY =~ ^[Yy]$ ]] && echo "Cancelled" && return 1; [[ -f "$3" ]] && sed -i "s@$1@$2@gi" "$3" && echo "Don Don" || { grep -RiIl "$1" "$target" 2>/dev/null | xargs -r sed -i "s@$1@$2@gi"; find "$target" -depth -name "*$1*" -exec bash -c 'mv "$0" "${0//'"$1"'/'"$2"'}"' {} \; echo "Don Don"; } || echo "Not don don"; }
 
-
-
+function ssd { ( > smartctl.txt; for d in $(lsblk -e1,7 -d -n -p -o KNAME); do echo $d >> smartctl.txt; echo >> smartctl.txt; export LC_ALL=C; smartctl -a $d >> smartctl.txt; done; cat smartctl.txt;) || (> smartctl.txt; for d in $(lsblk -e1,7 -d -n -o KNAME | grep -v loop | sed 's@^@/dev/@gi'); do echo $d >> smartctl.txt; echo >> smartctl.txt; export LC_ALL=C; smartctl -a $d >> smartctl.txt; done; cat smartctl.txt) } ; 
 
 
 
