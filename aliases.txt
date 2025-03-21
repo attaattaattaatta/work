@@ -36,9 +36,9 @@ function nserv { nginx -T | grep server_name $1 || grep -RiIn server_name /etc/n
 
 function ninc { nginx -T | grep include $1 || grep -RiIn include /etc/nginx/* $1 ; } ;
 
-alias rsynca='rsync -azxl --no-i-r --info=progress2' ;
+alias rsynca='rsync -aHAXSlz --no-i-r --info=progress2' ;
 
-alias rsynch='rsync -alHzx --no-i-r --info=progress2' ;
+alias rsynch='rsync -aHAXSlz --no-i-r --info=progress2' ;
 
 alias grepn='grep -RiIn' ;
 
