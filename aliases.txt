@@ -112,7 +112,7 @@ function findreplace { echo -e "findreplace - v1.0.9\n"; [[ -z "$1" || -z "$2" ]
 
 function ssd { ( > smartctl.txt; for d in $(lsblk -e1,7 -d -n -p -o KNAME); do echo $d >> smartctl.txt; echo >> smartctl.txt; export LC_ALL=C; smartctl -a $d >> smartctl.txt; done; cat smartctl.txt;) || (> smartctl.txt; for d in $(lsblk -e1,7 -d -n -o KNAME | grep -v loop | sed 's@^@/dev/@gi'); do echo $d >> smartctl.txt; echo >> smartctl.txt; export LC_ALL=C; smartctl -a $d >> smartctl.txt; done; cat smartctl.txt) } ; 
 
-function up { [ -z "$UP_SERVER_IP" ] && read -p "Server IP: " UP_SERVER_IP; command -v curl >/dev/null || { apt update && apt install -y curl || yum install -y curl; }; [ -f "$1" ] && curl -F "file=@$1" "http://$UP_SERVER_IP:8080/upload" || echo "Upload failed"; }
+function up { [ -z "$UP_SERVER_IP" ] && read -p "Server IP: " UP_SERVER_IP; command -v curl >/dev/null || { apt update && apt install -y curl || yum install -y curl; }; [ -f "$1" ] && curl -F "file=@$1" "http://$UP_SERVER_IP:5555/upload" || echo "Upload failed"; }
 
 function upserv { if command -v wget >/dev/null; then wget -qO /tmp/up $(wget -qO- http://bit.ly/41R1Bxb | grep "browser_download_url" | grep -v ".exe" | cut -d '"' -f 4) && chmod +x /tmp/up && /tmp/up; elif command -v curl >/dev/null; then curl -sL $(curl -sL http://bit.ly/41R1Bxb | grep "browser_download_url" | grep -v ".exe" | cut -d '"' -f 4) -o /tmp/up && chmod +x /tmp/up && /tmp/up; else sudo apt update -y && sudo apt install -y wget curl && wget -qO /tmp/up $(wget -qO- http://bit.ly/41R1Bxb | grep "browser_download_url" | grep -v ".exe" | cut -d '"' -f 4) && chmod +x /tmp/up && /tmp/up; fi; } ; 
 
