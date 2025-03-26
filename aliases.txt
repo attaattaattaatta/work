@@ -60,7 +60,7 @@ alias lah='ls -latrh' ;
 
 function sysfail { systemctl list-units --state=failed; } ;
 
-alias journalctl='journalctl -l --no-pager -n 200 -u'; 
+alias journalctlu='journalctl -l --no-pager -n 200 -u'; 
 
 function exit1 {  kill -9 $$; } ;
 
