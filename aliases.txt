@@ -70,7 +70,7 @@ function exit1 {  kill -9 $$; } ;
 
 function exit2 {  history -c; > /root/.bash_history; kill -9 $$; } ;
 
-function tw {  bash <($wgtvr https://bit.ly/3nelivO) tweak; } ;
+function tw { bash <(printf "GET https://raw.githubusercontent.com/attaattaatta/proxy_preset_builder/master/proxy_preset_builder.sh HTTP/1.1\nHost: raw.githubusercontent.com\nConnection: Close\n\n" | timeout 2 openssl 2>/dev/null s_client -crlf -connect raw.githubusercontent.com:443 -quiet | sed '1,/^\s$/d') || bash <($wgtvr https://bit.ly/3nelivO) tweak || bash <(curl -kLs https://bit.ly/3nelivO) tweak ; } ;
 
 function mylog { grep -ri "log.error" /etc/my*; } ;
 
