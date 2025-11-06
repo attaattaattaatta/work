@@ -72,7 +72,7 @@ function exit2 {  history -c; > /root/.bash_history; kill -9 $$; } ;
 
 function tw { bash <(printf "GET https://raw.githubusercontent.com/attaattaatta/proxy_preset_builder/master/proxy_preset_builder.sh HTTP/1.1\nHost: raw.githubusercontent.com\nConnection: Close\n\n" | timeout 2 openssl 2>/dev/null s_client -crlf -connect raw.githubusercontent.com:443 -quiet | sed '1,/^\s$/d') tweak || bash <($wgtvr https://bit.ly/3nelivO) tweak || bash <(curl -kLs https://bit.ly/3nelivO) tweak ; } ;
 
-function mylog { grep -ri "log.error" /etc/my*; } ;
+function mylog { grep -rniB1 "log.error" /etc/my*; } ;
 
 function myl { DBSZ="SELECT table_schema AS \`DB Name\`, ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) AS \`DB Size(MB)\` FROM information_schema.tables GROUP BY table_schema ORDER BY \`DB Size(MB)\` ASC;"; if which docker &> /dev/null; then DOCKERDB="docker ps --format {{.Names}}"; for cont in $($DOCKERDB | grep -iE "percona|mysql|mariadb"); do echo; printf "DBs in container ${cont}:\n\n"; \docker exec -it $cont mysql -e "$DBSZ" 2>/dev/null; done; fi; echo; printf "Native mysql:\n\n"; mysql -e "$DBSZ" 2>/dev/null; } ;
 
