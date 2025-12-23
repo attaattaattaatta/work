@@ -86,7 +86,7 @@ function myt { local TOP="$1"; local QALL="SELECT table_schema AS 'DB Name', tab
 
 function mysql_all_db_exec { Q="$1"; alias | /usr/bin/which --tty-only --read-alias --show-dot --show-tilde docker &>/dev/null && while read -r id image; do echo "$image" | grep -qiE 'percona|mysql|mariadb' && docker exec "$id" mysql -N -e "SHOW DATABASES" | grep -Ev '^(information_schema|performance_schema|mysql|sys)$' | while read -r db; do docker exec "$id" mysql "$db" -e "$Q"; done; done < <(docker ps --format '{{.ID}} {{.Image}}'); alias | /usr/bin/which --tty-only --read-alias --show-dot --show-tilde mysql &>/dev/null && mysql -N -e "SHOW DATABASES" | grep -Ev '^(information_schema|performance_schema|mysql|sys)$' | while read -r db; do mysql "$db" -e "$Q"; done; } ;
 
-
+function mypass { ISPPATH="/usr/local/mgr5/etc"; sqlite3 $ISPPATH/ispmgr.db "select id,name,password,db_server from db_users_password" | while IFS="|" read id name encpass dbid; do pass=$(echo "$encpass" | base64 -d | openssl pkeyutl -decrypt -inkey $ISPPATH/ispmgr.pem); db=$(sqlite3 $ISPPATH/ispmgr.db "select name from db_server where id=$dbid;"); echo; echo "UserID: $id / User: $name / Password: $pass / DBS: $db"; done; ISPPATH="/usr/local/mgr5/etc"; sqlite3 $ISPPATH/ispmgr.db "select id from db_server"  | while read id; do db=$(sqlite3 $ISPPATH/ispmgr.db "select name from db_server where id=$id;"); user=$(sqlite3 $ISPPATH/ispmgr.db "select username from db_server where id=$id;"); pass=$(sqlite3 $ISPPATH/ispmgr.db "select password from db_server where id=$id;" | base64 -d | openssl pkeyutl -decrypt -inkey $ISPPATH/ispmgr.pem) ; echo; echo "ID: $id / DBS: $db / Login: $user / Password: $pass"; done; } ;
 
 alias screen='screen -O' ;
 
